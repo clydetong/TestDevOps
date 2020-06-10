@@ -5,6 +5,7 @@ using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Web;
+using System.Web.Configuration;
 
 namespace 期末專題_圖片平台.Models
 {
@@ -12,9 +13,10 @@ namespace 期末專題_圖片平台.Models
     {
         public string w新增作品(CWorkSpace w)
         {
+            SqlConnection conn = new SqlConnection(WebConfigurationManager.ConnectionStrings["sqlfinal"].ConnectionString.ToString());
+
             string strSql = @"Insert into wWorkTable(""姓名"",""分類"",""作品名稱"",""作品描述"",""圖片名稱"",""圖片路徑"",""上傳日期"",""勾選項目分類"")
                                                 values(@姓名,@分類,@作品名稱,@作品描述,@圖片名稱,@圖片路徑,@上傳日期,@勾選項目分類)";
-            SqlConnection conn = new SqlConnection(@"Data Source=.;Initial Catalog=期末專題;Integrated Security=True");
             SqlCommand cmd = new SqlCommand(strSql, conn);
             cmd.CommandType = CommandType.Text;
 
@@ -67,7 +69,6 @@ namespace 期末專題_圖片平台.Models
             return "作品新增成功";
         }
 
-
         public CWorkSpace[] wGet所有作品()
         {
             string strSql = "select * from wWorkTable";
@@ -75,8 +76,9 @@ namespace 期末專題_圖片平台.Models
         }
         public CWorkSpace wGetBy編號(int id)
         {
+            SqlConnection conn = new SqlConnection(WebConfigurationManager.ConnectionStrings["sqlfinal"].ConnectionString.ToString());
+
             string strSql = $"select * from wWorkTable where 編號 = {id}";
-            SqlConnection conn =new SqlConnection(@"Data Source=.;Initial Catalog=期末專題;Integrated Security=True");
             conn.Open();
             SqlCommand cmd = new SqlCommand(strSql, conn);
             SqlDataReader reader = cmd.ExecuteReader();
@@ -144,7 +146,8 @@ namespace 期末專題_圖片平台.Models
 
         private static void executeNonQuery(string strSql)
         {
-            SqlConnection conn = new SqlConnection(@"Data Source=.;Initial Catalog=期末專題;Integrated Security=True");
+            SqlConnection conn = new SqlConnection(WebConfigurationManager.ConnectionStrings["sqlfinal"].ConnectionString.ToString());
+
             SqlCommand cmd = new SqlCommand(strSql, conn);
             conn.Open();
             cmd.ExecuteNonQuery();
@@ -155,7 +158,8 @@ namespace 期末專題_圖片平台.Models
 
         private static CWorkSpace[] getbySql(string strSql)
         {
-            SqlConnection conn = new SqlConnection(@"Data Source=.;Initial Catalog=期末專題;Integrated Security=True");
+            SqlConnection conn = new SqlConnection(WebConfigurationManager.ConnectionStrings["sqlfinal"].ConnectionString.ToString());
+
             conn.Open();
             SqlCommand cmd = new SqlCommand(strSql, conn);
             SqlDataReader reader = cmd.ExecuteReader();
@@ -175,8 +179,10 @@ namespace 期末專題_圖片平台.Models
                     勾選項目分類 = reader["勾選項目分類"].ToString(),
                 });
             }
+
             conn.Close();
             cmd.Dispose();
+            conn.Dispose();
             return list.ToArray();
         }
 
